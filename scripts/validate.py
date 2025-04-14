@@ -7,6 +7,7 @@ df = extractor.create_df()  # Call the method on that instance
 
 
 # Store all invalid rows + reasons
+global error_rows
 error_rows = []
 
 # --- VALIDATION FUNCTIONS ---
@@ -42,19 +43,23 @@ def check_unit_price(df):
     invalid_df["error_reason"] = "invalid unit price or < 0"
     return invalid_df
 
-# check if it exists and has length
+# * only flag if missing when quantity >0
 def check_description(df):
     mask_invalid = ~df["Description"].apply(lambda x: isinstance(x, str))
-    mask_null = df["Description"].isnull() # check if any entry is empty
-    mask_empty = df["Description"].astype(str).str.strip() == "" # check if entered with whitespace
+    mask_null = df["Description"].isnull()
+    mask_empty = df["Description"].astype(str).str.strip() == ""
 
-    full_mask = mask_invalid | mask_null | mask_empty
+    bad_desc_mask = mask_invalid | mask_null | mask_empty
+
+    quantity_numeric = pd.to_numeric(df["Quantity"], errors="coerce")
+    mask_quantity_positive = quantity_numeric.notna() & (quantity_numeric > 0)
+
+    full_mask = bad_desc_mask & mask_quantity_positive
+
     invalid_df = df[full_mask].copy()
-    invalid_df["error_reason"] = "Invalid Description (not string, null, or empty)"
+    invalid_df["error_reason"] = "Invalid Description (missing for Quantity > 0)"
     return invalid_df
 
-
-# * Can be parsed as a datetime
 def check_invoice_date(df):
     quantity_datetime = pd.to_datetime(df["InvoiceDate"], errors="coerce")
 
@@ -72,8 +77,6 @@ def check_customer_id(df):
     return invalid_df
 
 
-
-# * make sure not null
 def check_country(df):
     mask_invalid = df["Country"].isna() | ~df["Country"].apply(lambda x: isinstance(x, str))
     invalid_df = df[mask_invalid].copy()
@@ -98,8 +101,8 @@ def run_all_validations(df):
     unit_price_issues = check_unit_price(df)
     error_rows.append(unit_price_issues)
 
-    # description_issues = check_description(df)
-    # error_rows.append(description_issues)
+    description_issues = check_description(df)
+    error_rows.append(description_issues)
 
     datetime_issues = check_invoice_date(df)
     error_rows.append(datetime_issues)
@@ -114,6 +117,11 @@ def run_all_validations(df):
     error_df = pd.concat(error_rows) # combines multiple dataframes that are in the lits into one dataframe
     valid_df = df[~df.index.isin(error_df.index)].copy()
 
+
+    valid_df["Quantity"] = pd.to_numeric(valid_df["Quantity"], errors="coerce")
+    valid_df["UnitPrice"] = pd.to_numeric(valid_df["UnitPrice"], errors="coerce")
+    valid_df["TotalAmount"] = valid_df["Quantity"] * valid_df["UnitPrice"]
+    
     return valid_df, error_df
 
 # --- MAIN ---
@@ -125,3 +133,8 @@ if __name__ == "__main__":
     print("Invalid rows:", len(error_df))
     print("here is sample of 10 errors")
     print(error_df.head(10))  # Show sample of invalid rows
+
+    # write valid df and error df to csv file in output folder
+
+    valid_df.to_csv("./output/cleaned_data.csv")
+    error_df.to_csv("./output/error_report.csv")
