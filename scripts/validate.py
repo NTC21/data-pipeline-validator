@@ -1,14 +1,9 @@
 import pandas as pd
 import numpy as np
-from extract import CSVToDF
+from scripts.extract import CSVToDF
 
 extractor = CSVToDF()     # Create an instance
 df = extractor.create_df()  # Call the method on that instance
-
-
-# Store all invalid rows + reasons
-global error_rows
-error_rows = []
 
 # --- VALIDATION FUNCTIONS ---
 
@@ -88,7 +83,7 @@ def check_country(df):
 # --- VALIDATION RUNNER ---
 
 def run_all_validations(df):
-    global error_rows
+    error_rows = [] # this will store the error with the reason
 
     # Add checks here
 
@@ -125,16 +120,16 @@ def run_all_validations(df):
     return valid_df, error_df
 
 # --- MAIN ---
-
 if __name__ == "__main__":
-    valid_df, error_df = run_all_validations(df)
+    # valid_df, error_df = run_all_validations(df)
 
-    print("Valid rows:", len(valid_df))
-    print("Invalid rows:", len(error_df))
-    print("here is sample of 10 errors")
-    print(error_df.head(10))  # Show sample of invalid rows
+    # print("Valid rows:", len(valid_df))
+    # print("Invalid rows:", len(error_df))
+    # print("here is sample of 10 errors")
+    # print(error_df.head(10))  # Show sample of invalid rows
 
-    # write valid df and error df to csv file in output folder
+    # # write valid df and error df to csv file in output folder
 
-    valid_df.to_csv("./output/cleaned_data.csv")
-    error_df.to_csv("./output/error_report.csv")
+    # valid_df.to_csv("./output/cleaned_data.csv")
+    # error_df.to_csv("./output/error_report.csv")
+    pass

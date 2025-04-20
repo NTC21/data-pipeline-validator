@@ -35,12 +35,13 @@ def generate_summary(df):
 
     return summary_df, top5_countries_df, top5_products_df
 
-if __name__ == "__main__":
-    summary_df, top5_countries_df, top5_products_df = generate_summary(df)
+# ---TESTING---
+# if __name__ == "__main__":
+#     summary_df, top5_countries_df, top5_products_df = generate_summary(df)
 
-    with pd.ExcelWriter("./output/summary_report.xlsx", engine="openpyxl") as writer:
-        summary_df.to_excel(writer, sheet_name="Summary Overview", index=False)
-        top5_countries_df.to_excel(writer, sheet_name="Top 5 Countries", index=False)
-        top5_products_df.to_excel(writer, sheet_name="Top 5 Products", index=False)
+#     with pd.ExcelWriter("./output/summary_report.xlsx", engine="openpyxl") as writer:
+#         summary_df.to_excel(writer, sheet_name="Summary Overview", index=False)
+#         top5_countries_df.to_excel(writer, sheet_name="Top 5 Countries", index=False)
+#         top5_products_df.to_excel(writer, sheet_name="Top 5 Products", index=False)
 
-    print("Summary files written to /output")
+#     print("Summary files written to /output")
