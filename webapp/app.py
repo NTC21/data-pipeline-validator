@@ -22,21 +22,21 @@ def handle_data():
     subprocess.run("py main.py")
     print("running subproces main.py validator, cleaning, normalizing, load_to_db")
 
-    with zipfile.ZipFile('output/output.zip', 'w') as myzip:
-        myzip.write('output/cleaned_data.csv')
-        myzip.write('output/customers.csv')
-        myzip.write('output/error_report.csv')
-        myzip.write('output/order_items.csv')
-        myzip.write('output/orders.csv')
-        myzip.write('output/products.csv')
-        myzip.write('output/summary_report.xlsx')
-        myzip.write('db/ecommerce.db')
+    with zipfile.ZipFile('webapp/output/output.zip', 'w') as myzip:
+        myzip.write('webapp/output/cleaned_data.csv', arcname='cleaned_data.csv')
+        myzip.write('webapp/output/customers.csv', arcname='customers.csv')
+        myzip.write('webapp/output/error_report.csv', arcname='error_report.csv')
+        myzip.write('webapp/output/order_items.csv', arcname='order_items.csv')
+        myzip.write('webapp/output/orders.csv', arcname='orders.csv')
+        myzip.write('webapp/output/products.csv', arcname='products.csv')
+        myzip.write('webapp/output/summary_report.xlsx', arcname='summary_report.xlsx')
+        myzip.write('webapp/output/db/ecommerce.db', arcname='ecommerce.db')
 
     return redirect(url_for('give_output'))
 
 @app.route('/download', methods=['GET'])
 def give_output():
-    output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'output', 'output.zip'))
+    output_path = os.path.join(os.path.dirname(__file__), 'output', 'output.zip')
     return send_file(output_path, as_attachment=True)
 
 @app.route('/example', methods=['GET'])

@@ -4,18 +4,18 @@ import os
 
 def load_to_db():
     # Ensure the database directory exists
-    os.makedirs("./db", exist_ok=True)
+    os.makedirs("./webapp/output/db", exist_ok=True)
 
     # Connect to the SQLite database 
-    conn = sqlite3.connect("./db/ecommerce.db")
+    conn = sqlite3.connect("./webapp/output/db/ecommerce.db")
     cursor = conn.cursor()
 
     # List of CSVs to load
     tables = {
-        "orders": "./output/orders.csv",
-        "order_items": "./output/order_items.csv",
-        "products": "./output/products.csv",
-        "customers": "./output/customers.csv"
+        "orders": "./webapp/output/orders.csv",
+        "order_items": "./webapp/output/order_items.csv",
+        "products": "./webapp/output/products.csv",
+        "customers": "./webapp/output/customers.csv"
     }
 
     for table_name, file_path in tables.items():

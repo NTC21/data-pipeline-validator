@@ -1,0 +1,5 @@
+output/
+*.db
+*.zip
+__pycache__/
+.env
