@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
-from scripts.extract import CSVToDF
+# from scripts.extract import CSVToDF
 
-extractor = CSVToDF()     # Create an instance
-df = extractor.create_df()  # Call the method on that instance
+# extractor = CSVToDF()     # Create an instance
+# df = extractor.create_df()  # Call the method on that instance
 
 # --- VALIDATION FUNCTIONS ---
 

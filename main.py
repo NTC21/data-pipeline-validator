@@ -1,5 +1,6 @@
  # first we want to run validate.py
 import os
+import boto3.s3
 import pandas as pd
 import csv
 import sqlite3
@@ -8,15 +9,23 @@ from scripts import normalize_tables
 # from scripts import load_to_db
 from scripts import generate_summary
 # from scripts import extract
-from scripts.extract import CSVToDF
+# from scripts.extract import CSVToDF
 from scripts.load_to_db import load_to_db
+import boto3
+import io
+
 
 # todo need to get the error_df inclduing all the erros in the csv file and the cleaned version 
 
 def run_all():
     try:
-        extractor = CSVToDF()
-        df = extractor.create_df()
+        # extractor = CSVToDF()
+        # df = extractor.create_df()
+        s3_client = boto3.client('s3')
+        response = s3_client.get_object(Bucket='data-pipeline-project-bucket-1252634', Key='uploads/data.csv')
+        body = response['Body']
+        df = pd.read_csv(io.BytesIO(body.read()), encoding='ISO-8859-1')
+
         print("✅ Data extraction complete.")
     except Exception as e:
         print("❌ Error during data extraction:", e)

@@ -5,6 +5,10 @@ import pandas as pd
 import subprocess
 import zipfile
 import os
+import boto3
+import logging
+from botocore.exceptions import ClientError
+
 
 app = Flask(__name__)
 
@@ -16,7 +20,21 @@ def home():
 @app.route('/process', methods=['POST'])
 def handle_data():
     file = request.files['file']
-    file.save('data/raw/data.csv')
+    
+    # instead of saving the file to local we will upload to s3
+    # file.save('data/raw/data.csv')
+
+    s3_client = boto3.client('s3') #creating s3 object
+    try:
+        s3_client.upload_fileobj(file, 'data-pipeline-project-bucket-1252634', 'uploads/data.csv')
+        print("File uploaded to S3!")
+    except ClientError as e:
+        print("Failed to upload:", e)
+        sts = boto3.client("sts")
+        identity = sts.get_caller_identity()
+        print(identity)
+        return "Upload failed", 500
+
     print("Uploaded file:", file.filename)
 
     subprocess.run("py main.py")
