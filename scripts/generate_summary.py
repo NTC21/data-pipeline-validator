@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load cleaned data
-df = pd.read_csv("./output/cleaned_data.csv", encoding='ISO-8859-1')
+# df = pd.read_csv("./output/cleaned_data.csv", encoding='ISO-8859-1')
 
 def generate_summary(df):
     total_orders = df["InvoiceNo"].nunique()
