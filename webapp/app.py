@@ -39,6 +39,11 @@ def give_output():
     output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'output', 'output.zip'))
     return send_file(output_path, as_attachment=True)
 
+@app.route('/example', methods=['GET'])
+def example_data():
+    output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', 'original-data.csv'))
+    return send_file(output_path, as_attachment=True)
+
 
 if __name__ == "__main__":
     app.run(debug=True) # starts a web server locally

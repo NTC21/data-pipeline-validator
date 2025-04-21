@@ -4,20 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Pipeline Validator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 
 <body>
+    <h1 class="text-4xl font-bold text-center text-gray-800 mt-8">MAIN PAGE</h1>
+    
+    <div class="text-center mt-4">
+        <p class="text-center">
+            Upload E-commerce data in the following format
+        </p>
+        <a href="/example" class="underline text-blue-600 hover:text-blue-800">Download Example File</a>
 
-    <h1>THIS IS THE MAIN PAGE</h1>
+    </div>
 
-    <form action="/process" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" required><br>
-        <input type="submit" value="Upload and Run Pipeline">
+<form action="/process" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto mt-6">
+        <input type="file" name="file" required class="block mx-auto w-fit text-sm border border-gray-300 p-2 rounded"><br>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded w-full border border-black">
+            Upload and Run Pipeline
+        </button>
     </form>
-
-
-
-
 </body>
 </html>
