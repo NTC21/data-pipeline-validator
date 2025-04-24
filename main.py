@@ -24,6 +24,7 @@ def run_all():
         s3_client = boto3.client('s3')
         response = s3_client.get_object(Bucket='data-pipeline-project-bucket-1252634', Key='uploads/data.csv')
         body = response['Body']
+        # io.BytesIO turns the streaming data in a 'fake file' so that pandas can properly work on it
         df = pd.read_csv(io.BytesIO(body.read()), encoding='ISO-8859-1')
 
         print("✅ Data extraction complete.")

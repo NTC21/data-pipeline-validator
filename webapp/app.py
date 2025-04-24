@@ -9,6 +9,8 @@ import boto3
 import logging
 from botocore.exceptions import ClientError
 
+global s3_client
+s3_client = boto3.client('s3')
 
 app = Flask(__name__)
 
@@ -24,7 +26,6 @@ def handle_data():
     # instead of saving the file to local we will upload to s3
     # file.save('data/raw/data.csv')
 
-    s3_client = boto3.client('s3') #creating s3 object
     try:
         s3_client.upload_fileobj(file, 'data-pipeline-project-bucket-1252634', 'uploads/data.csv')
         print("File uploaded to S3!")
@@ -50,17 +51,52 @@ def handle_data():
         myzip.write('webapp/output/summary_report.xlsx', arcname='summary_report.xlsx')
         myzip.write('webapp/output/db/ecommerce.db', arcname='ecommerce.db')
 
+    try:
+        with open('webapp/output/output.zip', 'rb') as f:
+            s3_client.upload_fileobj(f, 'data-pipeline-project-bucket-1252634', 'results/output.zip')
+    except ClientError as e:
+        print("Failed to upload:", e)
+        return "Upload Failed", 500 
+
+
     return redirect(url_for('give_output'))
 
 @app.route('/download', methods=['GET'])
 def give_output():
-    output_path = os.path.join(os.path.dirname(__file__), 'output', 'output.zip')
-    return send_file(output_path, as_attachment=True)
+    expiration = 300  # 5 minutes
+
+    try:
+        response = s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': 'data-pipeline-project-bucket-1252634', 'Key': 'results/output.zip'},
+            ExpiresIn=expiration
+        )
+        return redirect(response)
+    except ClientError as e:
+        print("Failed to generate pre-signed URL:", e)
+        return "Could not generate download link", 500
+
 
 @app.route('/example', methods=['GET'])
 def example_data():
-    output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', 'original-data.csv'))
-    return send_file(output_path, as_attachment=True)
+    expiration = 300  # 5 minutes
+
+    try:
+        response = s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': 'data-pipeline-project-bucket-1252634', 'Key': 'example/original-data.csv'},
+            ExpiresIn=expiration
+        )
+        return redirect(response)
+    except ClientError as e:
+        print("Failed to generate pre-signed URL:", e)
+        return "Could not generate download link", 500
+
+
+
+
+    # output_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', 'original-data.csv'))
+    # return send_file(output_path, as_attachment=True)
 
 
 if __name__ == "__main__":
