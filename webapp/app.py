@@ -101,4 +101,4 @@ def example_data():
 
 
 if __name__ == "__main__":
-    app.run(debug=True) # starts a web server locally
+    app.run(host='0.0.0.0', port=5000, debug=True) # starts a web server open to the internet 
