@@ -14,7 +14,8 @@ from scripts.load_to_db import load_to_db
 import boto3
 import io
 
-
+os.makedirs("webapp/output", exist_ok=True)
+os.makedirs("webapp/output/db", exist_ok=True)
 # todo need to get the error_df inclduing all the erros in the csv file and the cleaned version 
 
 def run_all():

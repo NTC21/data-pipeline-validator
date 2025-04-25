@@ -41,6 +41,10 @@ def handle_data():
 
     subprocess.run([sys.executable, "main.py"], check=True)
     print("running subproces main.py validator, cleaning, normalizing, load_to_db")
+    
+    # make directories for the output
+    os.makedirs("webapp/output", exist_ok=True)
+    os.makedirs("webapp/output/db", exist_ok=True)
 
     with zipfile.ZipFile('webapp/output/output.zip', 'w') as myzip:
         myzip.write('webapp/output/cleaned_data.csv', arcname='cleaned_data.csv')
