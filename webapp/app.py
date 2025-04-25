@@ -63,23 +63,32 @@ def handle_data():
         print("Failed to upload:", e)
         return "Upload Failed", 500 
 
-
-    return redirect(url_for('give_output'))
-
-@app.route('/download', methods=['GET'])
-def give_output():
     expiration = 300  # 5 minutes
-
     try:
-        response = s3_client.generate_presigned_url(
+        presigned_url = s3_client.generate_presigned_url(
             'get_object',
             Params={'Bucket': 'data-pipeline-project-bucket-1252634', 'Key': 'results/output.zip'},
             ExpiresIn=expiration
         )
-        return redirect(response)
+        return render_template('success.html', download_url=presigned_url)
     except ClientError as e:
         print("Failed to generate pre-signed URL:", e)
         return "Could not generate download link", 500
+
+# @app.route('/download', methods=['GET'])
+# def give_output():
+#     expiration = 300  # 5 minutes
+
+#     try:
+#         response = s3_client.generate_presigned_url(
+#             'get_object',
+#             Params={'Bucket': 'data-pipeline-project-bucket-1252634', 'Key': 'results/output.zip'},
+#             ExpiresIn=expiration
+#         )
+#         return redirect(response)
+#     except ClientError as e:
+#         print("Failed to generate pre-signed URL:", e)
+#         return "Could not generate download link", 500
 
 
 @app.route('/example', methods=['GET'])
