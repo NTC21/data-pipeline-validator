@@ -8,6 +8,7 @@ import os
 import boto3
 import logging
 from botocore.exceptions import ClientError
+import sys
 
 global s3_client
 s3_client = boto3.client('s3')
@@ -38,7 +39,7 @@ def handle_data():
 
     print("Uploaded file:", file.filename)
 
-    subprocess.run("py main.py")
+    subprocess.run([sys.executable, "main.py"], check=True)
     print("running subproces main.py validator, cleaning, normalizing, load_to_db")
 
     with zipfile.ZipFile('webapp/output/output.zip', 'w') as myzip:
