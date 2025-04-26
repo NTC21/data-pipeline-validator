@@ -30,7 +30,26 @@ def handle_data():
     #create a uuid for the upload
     run_id = uuid.uuid4()
 
-    # instead of saving the file to local we will upload to s3
+    # instead of saving the file to local we will upload to s3 
+    # todo before uploading the csv file to bucket we must check if 3 files already exist under the ip address
+    
+    current_user_upload_file_list = s3_client.list_objects_v2(Bucket='data-pipeline-project-bucket-1252634', Prefix=f'uploads/{user_ip}/')
+    if 'Contents' in current_user_upload_file_list:
+        curr_num_files = len(current_user_upload_file_list['Contents'])
+        print("THIS IS NUMBER OF FILES::::::")
+        print(curr_num_files)
+        print(current_user_upload_file_list['Contents'])
+
+        try:
+            if curr_num_files > 2:
+                object_list = current_user_upload_file_list['Contents']
+                sorted_list = sorted(object_list, key=lambda x: x['LastModified'], reverse=True)
+                files_to_delete = sorted_list[2:]
+                for obj in files_to_delete:
+                    s3_client.delete_object(Bucket='data-pipeline-project-bucket-1252634', Key=obj['Key'])
+        except Exception as e:
+            print("Error during file cleanup:", e)
+
     try:
         s3_client.upload_fileobj(file, 'data-pipeline-project-bucket-1252634', f'uploads/{user_ip}/{run_id}data.csv')
         print("File uploaded to S3!")
@@ -59,6 +78,26 @@ def handle_data():
         myzip.write('webapp/output/products.csv', arcname='products.csv')
         myzip.write('webapp/output/summary_report.xlsx', arcname='summary_report.xlsx')
         myzip.write('webapp/output/db/ecommerce.db', arcname='ecommerce.db')
+
+
+    # todo before the upload we need to check if there are already 3 files existing under the ip. If there are already 3 we shall delete 1 before the upload!
+
+    current_user_results_file_list = s3_client.list_objects_v2(Bucket='data-pipeline-project-bucket-1252634', Prefix=f'results/{user_ip}/')
+    if 'Contents' in current_user_results_file_list:
+        curr_num_files = len(current_user_results_file_list['Contents'])
+        print("THIS IS NUMBER OF FILES::::::")
+        print(curr_num_files)
+        print(current_user_results_file_list['Contents'])
+
+        try:
+            if curr_num_files > 2:
+                object_list = current_user_results_file_list['Contents']
+                sorted_list = sorted(object_list, key=lambda x: x['LastModified'], reverse=True)
+                files_to_delete = sorted_list[2:]
+                for obj in files_to_delete:
+                    s3_client.delete_object(Bucket='data-pipeline-project-bucket-1252634', Key=obj['Key'])
+        except Exception as e:
+            print("Error during file cleanup:", e)
 
     try:
         with open('webapp/output/output.zip', 'rb') as f:
