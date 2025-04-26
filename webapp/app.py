@@ -9,6 +9,7 @@ import boto3
 import logging
 from botocore.exceptions import ClientError
 import sys
+import uuid
 
 global s3_client
 s3_client = boto3.client('s3')
@@ -23,12 +24,15 @@ def home():
 @app.route('/process', methods=['POST'])
 def handle_data():
     file = request.files['file']
-    
-    # instead of saving the file to local we will upload to s3
-    # file.save('data/raw/data.csv')
 
+    user_ip = request.remote_addr
+    print(f"this is the IP ADDRESS{user_ip}")
+    #create a uuid for the upload
+    run_id = uuid.uuid4()
+
+    # instead of saving the file to local we will upload to s3
     try:
-        s3_client.upload_fileobj(file, 'data-pipeline-project-bucket-1252634', 'uploads/data.csv')
+        s3_client.upload_fileobj(file, 'data-pipeline-project-bucket-1252634', f'uploads/{user_ip}/{run_id}data.csv')
         print("File uploaded to S3!")
     except ClientError as e:
         print("Failed to upload:", e)
@@ -58,7 +62,7 @@ def handle_data():
 
     try:
         with open('webapp/output/output.zip', 'rb') as f:
-            s3_client.upload_fileobj(f, 'data-pipeline-project-bucket-1252634', 'results/output.zip')
+            s3_client.upload_fileobj(f, 'data-pipeline-project-bucket-1252634', f'results/{user_ip}/{run_id}output.zip')
     except ClientError as e:
         print("Failed to upload:", e)
         return "Upload Failed", 500 
@@ -67,7 +71,7 @@ def handle_data():
     try:
         presigned_url = s3_client.generate_presigned_url(
             'get_object',
-            Params={'Bucket': 'data-pipeline-project-bucket-1252634', 'Key': 'results/output.zip'},
+            Params={'Bucket': 'data-pipeline-project-bucket-1252634', 'Key': f'results/{user_ip}/{run_id}output.zip', 'ResponseContentDisposition': 'attachment; filename="output.zip"'},
             ExpiresIn=expiration
         )
         return render_template('success.html', download_url=presigned_url)
@@ -75,20 +79,6 @@ def handle_data():
         print("Failed to generate pre-signed URL:", e)
         return "Could not generate download link", 500
 
-# @app.route('/download', methods=['GET'])
-# def give_output():
-#     expiration = 300  # 5 minutes
-
-#     try:
-#         response = s3_client.generate_presigned_url(
-#             'get_object',
-#             Params={'Bucket': 'data-pipeline-project-bucket-1252634', 'Key': 'results/output.zip'},
-#             ExpiresIn=expiration
-#         )
-#         return redirect(response)
-#     except ClientError as e:
-#         print("Failed to generate pre-signed URL:", e)
-#         return "Could not generate download link", 500
 
 
 @app.route('/example', methods=['GET'])
