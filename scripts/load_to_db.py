@@ -27,9 +27,7 @@ def load_to_db():
         #  DataFrame to SQL table
         df.to_sql(table_name, conn, if_exists="replace", index=False)
         
-        # print(f"✅ Inserted {len(df)} rows into '{table_name}'")
 
     # Close the connection
     conn.close()
-    # print("✅ Database write complete. DB located at: ./db/ecommerce.db")
     return

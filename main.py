@@ -6,13 +6,12 @@ import csv
 import sqlite3
 from scripts import validate
 from scripts import normalize_tables
-# from scripts import load_to_db
 from scripts import generate_summary
-# from scripts import extract
-# from scripts.extract import CSVToDF
 from scripts.load_to_db import load_to_db
 import boto3
 import io
+from webapp.config import S3_BUCKET_NAME
+
 
 os.makedirs("webapp/output", exist_ok=True)
 os.makedirs("webapp/output/db", exist_ok=True)
@@ -23,7 +22,7 @@ def run_all():
         # extractor = CSVToDF()
         # df = extractor.create_df()
         s3_client = boto3.client('s3')
-        response = s3_client.get_object(Bucket='data-pipeline-project-bucket-1252634', Key='uploads/data.csv')
+        response = s3_client.get_object(Bucket=S3_BUCKET_NAME, Key='uploads/data.csv')
         body = response['Body']
         # io.BytesIO turns the streaming data in a 'fake file' so that pandas can properly work on it
         df = pd.read_csv(io.BytesIO(body.read()), encoding='ISO-8859-1')

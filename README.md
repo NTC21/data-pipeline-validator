@@ -34,9 +34,17 @@ cd data-pipeline-validator
 pip install -r requirements.txt
 
 3. Set up AWS credentials if running locally
+- And update bucket name in config.py
 
 4. For local testing use Flask development server
 python3 webapp/app.py
 
 5. For production deployments:
 Set up Gunicorn with systemd (instructions in DEPLOYMENT.md)
+
+## Future Improvements
+- Implement user authentication for file access control
+- Add NGINX reverse proxy and HTTPS
+- Extend pipeline to support additional validation checks and data formats
+- Implement automatic S3 lifecycle rules for file expiration
+

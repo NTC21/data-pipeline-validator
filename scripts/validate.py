@@ -119,17 +119,3 @@ def run_all_validations(df):
     
     return valid_df, error_df
 
-# --- MAIN ---
-if __name__ == "__main__":
-    # valid_df, error_df = run_all_validations(df)
-
-    # print("Valid rows:", len(valid_df))
-    # print("Invalid rows:", len(error_df))
-    # print("here is sample of 10 errors")
-    # print(error_df.head(10))  # Show sample of invalid rows
-
-    # # write valid df and error df to csv file in output folder
-
-    # valid_df.to_csv("./output/cleaned_data.csv")
-    # error_df.to_csv("./output/error_report.csv")
-    pass
