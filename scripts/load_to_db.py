@@ -27,7 +27,6 @@ def load_to_db():
         #  DataFrame to SQL table
         df.to_sql(table_name, conn, if_exists="replace", index=False)
         
-
     # Close the connection
     conn.close()
     return

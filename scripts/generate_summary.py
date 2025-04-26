@@ -1,7 +1,5 @@
 import pandas as pd
 
-# Load cleaned data
-
 def generate_summary(df):
     total_orders = df["InvoiceNo"].nunique()
     total_revenue = df["TotalAmount"].sum()

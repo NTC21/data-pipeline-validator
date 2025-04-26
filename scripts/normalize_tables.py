@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-
 
 def normalize_orders(df):
     # Group and extract necessary values

@@ -1,9 +1,6 @@
  # first we want to run validate.py
 import os
-import boto3.s3
 import pandas as pd
-import csv
-import sqlite3
 from scripts import validate
 from scripts import normalize_tables
 from scripts import generate_summary
@@ -12,15 +9,12 @@ import boto3
 import io
 from webapp.config import S3_BUCKET_NAME
 
-
+# creates directories to output files
 os.makedirs("webapp/output", exist_ok=True)
 os.makedirs("webapp/output/db", exist_ok=True)
-# todo need to get the error_df inclduing all the erros in the csv file and the cleaned version 
 
 def run_all():
     try:
-        # extractor = CSVToDF()
-        # df = extractor.create_df()
         s3_client = boto3.client('s3')
         response = s3_client.get_object(Bucket=S3_BUCKET_NAME, Key='uploads/data.csv')
         body = response['Body']

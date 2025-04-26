@@ -24,21 +24,16 @@ def home():
 @app.route('/process', methods=['POST'])
 def handle_data():
     file = request.files['file']
+    user_ip = request.remote_addr 
 
-    user_ip = request.remote_addr
-    print(f"this is the IP ADDRESS{user_ip}")
-    #create a uuid for the upload
+    # create a uuid for the upload
     run_id = uuid.uuid4()
 
-    # instead of saving the file to local we will upload to s3 
-    
+    # upload to s3 
     current_user_upload_file_list = s3_client.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=f'uploads/{user_ip}/')
+    # if 3 or more delete one of the objects
     if 'Contents' in current_user_upload_file_list:
         curr_num_files = len(current_user_upload_file_list['Contents'])
-        print("THIS IS NUMBER OF FILES::::::")
-        print(curr_num_files)
-        print(current_user_upload_file_list['Contents'])
-
         try:
             if curr_num_files > 2:
                 object_list = current_user_upload_file_list['Contents']
@@ -60,7 +55,6 @@ def handle_data():
         return "Upload failed", 500
 
     print("Uploaded file:", file.filename)
-
     subprocess.run([sys.executable, "main.py"], check=True)
     print("running subproces main.py validator, cleaning, normalizing, load_to_db")
     
@@ -78,14 +72,9 @@ def handle_data():
         myzip.write('webapp/output/summary_report.xlsx', arcname='summary_report.xlsx')
         myzip.write('webapp/output/db/ecommerce.db', arcname='ecommerce.db')
 
-
-
     current_user_results_file_list = s3_client.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=f'results/{user_ip}/')
     if 'Contents' in current_user_results_file_list:
         curr_num_files = len(current_user_results_file_list['Contents'])
-        print("THIS IS NUMBER OF FILES::::::")
-        print(curr_num_files)
-        print(current_user_results_file_list['Contents'])
 
         try:
             if curr_num_files > 2:
@@ -125,11 +114,9 @@ def handle_data():
         return "Could not generate download link", 500
 
 
-
 @app.route('/example', methods=['GET'])
 def example_data():
     expiration = 300  # 5 minutes
-
     try:
         response = s3_client.generate_presigned_url(
             'get_object',
@@ -140,7 +127,6 @@ def example_data():
     except ClientError as e:
         print("Failed to generate pre-signed URL:", e)
         return "Could not generate download link", 500
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True) # starts a web server open to the internet 
