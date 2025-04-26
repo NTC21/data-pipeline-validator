@@ -1,5 +1,5 @@
 # data-pipeline-validator
-
+Data used from: https://www.kaggle.com/datasets/carrie1/ecommerce-data?resource=download
 ## Project Overview
 data-pipeline-validator is a full-stack cloud-based application:
 - Processes uploaded CSV files through automated validation pipeline
