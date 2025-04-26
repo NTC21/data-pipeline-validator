@@ -1,12 +1,13 @@
 # data-pipeline-validator
 
 ## Project Overview
-data-pipeline-validator is full-stack cloud-based application:
+data-pipeline-validator is a full-stack cloud-based application:
 - Processes uploaded CSV files through automated validation pipeline
 - Identifies and flags malformed, missing, or inconsistent data
 - Generates detailed summary reports and normalized database tables
 - Packages output into downloadable ZIP file
 - Integrated with AWS S3 for file storage and delivery
+
 The pipeline runs server-side, ensuring secure data handling
 
 ## Key Features
@@ -27,17 +28,17 @@ The pipeline runs server-side, ensuring secure data handling
 
 ## Setup Instructions
 1. Clone repository
-git clone https://github.com/your-username/data-pipeline-validator.git
-cd data-pipeline-validator
+### git clone https://github.com/your-username/data-pipeline-validator.git
+### cd data-pipeline-validator
 
 2. Install Python dependencies
-pip install -r requirements.txt
+### pip install -r requirements.txt
 
 3. Set up AWS credentials if running locally
 - And update bucket name in config.py
 
 4. For local testing use Flask development server
-python3 webapp/app.py
+### python3 webapp/app.py
 
 5. For production deployments:
 Set up Gunicorn with systemd (instructions in DEPLOYMENT.md)
